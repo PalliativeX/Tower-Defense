@@ -1,15 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameTileContent : MonoBehaviour
 {
 	[SerializeField]
 	GameTileContentType type = default;
 
-	public GameTileContentType Type => type;
-
 	GameTileContentFactory originFactory;
+
+	public GameTileContentType Type => type;
 
 	public GameTileContentFactory OriginFactory
 	{
@@ -25,5 +23,4 @@ public class GameTileContent : MonoBehaviour
 	{
 		originFactory.Reclaim(this);
 	}
-
 }
