@@ -22,3 +22,4 @@ MonoBehaviour:
     type: 3}
   towerPrefabs:
   - {fileID: 6221844118929181101, guid: c17ad76c269144a8cba63b4be74e22d0, type: 3}
+  - {fileID: 7767298205866176731, guid: b541e6e3229e0924f841008ae15a0127, type: 3}

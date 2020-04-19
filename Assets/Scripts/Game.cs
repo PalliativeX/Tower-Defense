@@ -13,17 +13,19 @@ public class Game : MonoBehaviour
 	GameTileContentFactory tileContentFactory = default;
 
 	[SerializeField]
-	EnemyFactory enemyFactory = default;
-
-	[SerializeField]
 	WarFactory warFactory = default;
 
+	[SerializeField, Range(0, 100)]
+	int startingPlayerHealth = 10;
+
+	[SerializeField, Range(1f, 10f)]
+	float playSpeed = 1f;
+
+	int playerHealth;
+
+	const float pausedTimeScale = 0f;
+
 	static Game instance;
-
-	[SerializeField, Range(0.1f, 10f)]
-	float spawnSpeed = 1f;
-
-	float spawnProgress;
 
 	GameBehaviourCollection enemies = new GameBehaviourCollection();
 	GameBehaviourCollection nonEnemies = new GameBehaviourCollection();
@@ -32,6 +34,11 @@ public class Game : MonoBehaviour
 
 	Ray TouchRay => Camera.main.ScreenPointToRay(Input.mousePosition);
 
+	[SerializeField]
+	GameScenario scenario = default;
+
+	GameScenario.State activeScenario;
+
 	private void OnEnable()
 	{
 		instance = this;
@@ -39,8 +46,10 @@ public class Game : MonoBehaviour
 
 	void Awake()
 	{
+		playerHealth = startingPlayerHealth;
 		board.Initialize(boardSize, tileContentFactory);
 		board.ShowGrid = true;
+		activeScenario = scenario.Begin();
 	}
 
 	void OnValidate()
@@ -84,16 +93,51 @@ public class Game : MonoBehaviour
 			selectedTowerType = TowerType.Mortar;
 		}
 
-		spawnProgress += spawnSpeed * Time.deltaTime;
-		while (spawnProgress >= 1f)
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			spawnProgress -= 1f;
-			SpawnEnemy();
+			Time.timeScale = Time.timeScale > pausedTimeScale ? pausedTimeScale : playSpeed;
 		}
+		else if (Time.timeScale > pausedTimeScale)
+		{
+			Time.timeScale = playSpeed;
+		}
+
+		if (Input.GetKeyDown(KeyCode.N))
+		{
+			BeginNewGame();
+		}
+
+		if (playerHealth <= 0 && startingPlayerHealth > 0)
+		{
+			Debug.Log("Defeat!");
+			BeginNewGame();
+		}
+
+		if (!activeScenario.Progress() && enemies.IsEmpty)
+		{
+			Debug.Log("Victory!");
+			BeginNewGame();
+			activeScenario.Progress();
+		}
+
 		enemies.GameUpdate();
-		Physics.SyncTransforms();
+		Physics.SyncTransforms();	
 		board.GameUpdate();
 		nonEnemies.GameUpdate();
+	}
+
+	void BeginNewGame()
+	{
+		playerHealth = startingPlayerHealth;
+		enemies.Clear();
+		nonEnemies.Clear();
+		board.Clear();
+		activeScenario = scenario.Begin();
+	}
+
+	public static void EnemyReachedDestination()
+	{
+		instance.playerHealth -= 1;
 	}
 
 	public static Shell SpawnShell()
@@ -108,6 +152,14 @@ public class Game : MonoBehaviour
 		Explosion explosion = instance.warFactory.Explosion;
 		instance.nonEnemies.Add(explosion);
 		return explosion;
+	}
+
+	public static void SpawnEnemy(EnemyFactory factory, EnemyType type)
+	{
+		GameTile spawnPoint = instance.board.GetSpawnPoint(Random.Range(0, instance.board.SpawnPointCount));
+		Enemy enemy = factory.Get(type);
+		enemy.SpawnOn(spawnPoint);
+		instance.enemies.Add(enemy);
 	}
 
 	void HandleAlternativeTouch()
@@ -140,13 +192,5 @@ public class Game : MonoBehaviour
 				board.ToggleWall(tile);
 			}
 		}
-	}
-
-	void SpawnEnemy()
-	{
-		GameTile spawnPoint = board.GetSpawnPoint(Random.Range(0, board.SpawnPointCount));
-		Enemy enemy = enemyFactory.Get();
-		enemy.SpawnOn(spawnPoint);
-		enemies.Add(enemy);
 	}
 }

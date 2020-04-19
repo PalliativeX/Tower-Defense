@@ -149,7 +149,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 2fc00b2dad70df34780d3f8e0a20fb03, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -310,10 +310,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  targetingRange: 2.32
+  targetingRange: 2.5
   turret: {fileID: 5779718188782915748}
   laserBeam: {fileID: 6186877083689784730}
-  damagePerSecond: 42.7
+  damagePerSecond: 60
 --- !u!1 &8597698089362101344
 GameObject:
   m_ObjectHideFlags: 0

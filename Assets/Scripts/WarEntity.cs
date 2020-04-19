@@ -8,7 +8,7 @@ public class WarEntity : GameBehaviour
 
 	public WarFactory OriginFactory
 	{
-		get => originFactory;
+		get => originFactory;	
 		set 
 		{
 			Debug.Assert(originFactory == null, "Redefined origin factory!");
@@ -16,7 +16,7 @@ public class WarEntity : GameBehaviour
 		}
 	}
 
-	public void Recycle()
+	public override void Recycle()
 	{
 		originFactory.Reclaim(this);
 	}

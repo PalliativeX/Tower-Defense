@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameBehaviour : MonoBehaviour
+public abstract class GameBehaviour : MonoBehaviour
 {
 	public virtual bool GameUpdate() => true;
+
+	public abstract void Recycle();
 }
