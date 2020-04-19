@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca81cd4312ea30d44a5af1e7dbfa3c6d, type: 3}
   m_Name: Cube Scenario
   m_EditorClassIdentifier: 
-  waves: []
+  waves:
+  - {fileID: 11400000, guid: da0e715b52ddde044b5aa8230a891552, type: 2}
+  - {fileID: 11400000, guid: 42b892c00efff4546a4c2e6d22441ba9, type: 2}
+  cycles: 1
+  cycleSpeedUp: 0.5
